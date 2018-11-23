@@ -93,7 +93,7 @@ for m = 1:nCluster
     end   
     
     % Determine the cluster type: 1 single, 2 twin cluster
-    cluster(m).type = (rand>paraSt.k_sel)+1;
+    cluster(m).type = (rand>paraSt.k_sel)+1; % .k_sel:Proportion of twin/single clusters, if is 1, all clusters are single (bounce) clusters and if 0 all clusters are twin clusters
 end
 
 % Parameterize the clusters
@@ -103,13 +103,13 @@ for m = 1:nCluster
             % BS side
             pos_VR = VR(cluster(m).refVR, :); % VR position [x y]
             pos_BS = posBS(cluster(m).refBS, :); % BS position [x y z]
-            VR_direct = pos_VR-pos_BS(1:2); % VR to BS vector
+            VR_direct = pos_VR-pos_BS(1:2); % VR to BS vector              % VR direct is the vector between VR and the BS, while ignoring height (z dimenssion) of the BS (on (x,y) plane)
             VR_direct(3) = 0;
             
             [phi, theta, r] = cart2sph(VR_direct(1), VR_direct(2), VR_direct(3));
             phi_new = phi+deg2rad(get_random(paraSt.pdf_phi_c, paraSt.phi_c)); % Determine the cluster to BS-VR angle
             theta_new = theta+deg2rad(get_random(paraSt.pdf_theta_c, paraSt.theta_c)); % Determine the cluster to BS-VR angle
-            r_new = get_random(paraSt.pdf_r_c, paraSt.para_r_c); % Determine the cluster to BS distance
+            r_new = get_random(paraSt.pdf_r_c, paraSt.para_r_c); % Determine the cluster to BS distance  %.para_r_c: Statistics distance cluster-BS/VR [m]
             [c_direct(1), c_direct(2), c_direct(3)] = sph2cart(phi_new, theta_new, r_new); % Cluster to VR vector
             
             cluster(m).pos_c_BS = pos_BS+c_direct; % Determine cluster at BS side 

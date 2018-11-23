@@ -196,8 +196,8 @@ switch paraEx.network
         paraSt.k_tau = 16; % Cluster power decaying factor lin. [/us]
         paraSt.tau_b = 30/3e8*1e6; % Cluster power decaying cut-off delay [us] (cell size)
         
-        paraSt.d_co = 30; % LOS cut-off distance [m]
-        paraSt.r_l = 0; % LOS VR size [m]
+        paraSt.d_co = 1000%30; % LOS cut-off distance [m]
+        paraSt.r_l = 1000%0; % LOS VR size [m]
         paraSt.l_l = 0; % LOS TR size [m]
         paraSt.mu_k = 10^(-10/10); % LOS power factor, mean linear
         paraSt.sigma_k = 7.2; % LOS power factor, std dB
@@ -508,8 +508,8 @@ switch paraEx.network
                 paraSt.k_tau = 31; % Cluster power decaying factor lin. /us
                 paraSt.tau_b = .25e-6; % Cluster power decaying cut-off delay [s]
 
-                paraSt.d_co = paraEx.net_radii; %LOS cut-off distance [m]
-                paraSt.r_l = paraEx.net_radii; %LOS VR size [m]
+                paraSt.d_co = 1000 %paraEx.net_radii; %LOS cut-off distance [m]
+                paraSt.r_l = 1000  %paraEx.net_radii; %LOS VR size [m]
                 paraSt.l_l = 0; %LOS TR size [m]
                 paraSt.mu_k = 10^(-5.2/10); %LOS power factor, mean linear
                 paraSt.sigma_k = 2.9; %LOS power factor, std dB

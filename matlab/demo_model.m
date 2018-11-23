@@ -80,16 +80,16 @@
 % Choose a Network type out of 
 % {'IndoorHall_5GHz','SemiUrban_300MHz','Indoor_CloselySpacedUser_2_6GHz','SemiUrban_CloselySpacedUser_2_6GHz','SemiUrban_VLA_2_6GHz'}
 % to parameterize the COST2100 model
-Network = 'Indoor_CloselySpacedUser_2_6GHz';
+Network = 'IndoorHall_5GHz';
 % In COST2100, # links = # BSs x # MSs
 % Set Link type to `Multiple' if you work with more than one link
 % Set Link type to `Single' otherwise
-Link = 'Multiple';
+Link = 'Single';
 % Choose an Antenna type out of
 % {'SISO_omni', 'MIMO_omni', 'MIMO_dipole', 'MIMO_measured', 'MIMO_Cyl_patch', 'MIMO_VLA_omni'}
-Antenna = 'MIMO_Cyl_patch';
+Antenna = 'MIMO_VLA_omni';
 % ...and type of channel: {'Wideband','Narrowband'}.
-Band = 'Wideband';
+Band = 'Narrowband';
 
 % Here are some tested combinations of the above variables:
 % 'IndoorHall_5GHz', 'Single', 'SISO_omni', 'Wideband'
@@ -109,12 +109,12 @@ switch Network
                 scenario = 'LOS'; % {'LOS'} only LOS is available
                 freq = [-10e6 10e6]+5.3e9; % [Hz}
                 snapRate = 1; % Number of snapshots per s
-                snapNum = 100; % Number of snapshots
+                snapNum = 5; % Number of snapshots
                 MSPos  = [10 5  0]; % [m]
                 MSVelo = -[0 .1 0]; % [m/s]
                 BSPosCenter  = [10 10 0]; % Center position of BS array [x, y, z] [m]
-                BSPosSpacing = [0 0 0]; % Inter-position spacing (m), for large arrays
-                BSPosNum = 1; % Number of positions at each BS site, for large arrays
+                BSPosSpacing = [0.05 0 0]; % Inter-position spacing (m), for large arrays
+                BSPosNum = 17; % Number of positions at each BS site, for large arrays
             case 'Multiple'
                 error('IndoorHall_5GHz does not support multiple links.');
         end

@@ -47,8 +47,8 @@ end
 
 Nr = 1; % Assuming single-antenna terminals
 first_snapshot = 1;
-last_snapshot = size(link.channel,2); 
-nBS_pos = size(link.channel,1); % number of positions along large array
+last_snapshot = size(link(1).channel,2) %size(link.channel,2); 
+nBS_pos = size(link(1).channel,1) %size(link.channel,1); % number of positions along large array
 H = zeros(last_snapshot,length(Nfreq),Nr,nBS_pos);
 for jj = first_snapshot:last_snapshot      
     for kk = 1:nBS_pos
@@ -63,5 +63,32 @@ for jj = first_snapshot:last_snapshot
         H(jj,:,1,kk) = H11;
     end
 end
-
+disp('why ifft?')
+disp('why channel2 (h_los) has zero amplitude? element number six of it is zero')
+disp('start from here')
+disp("size(h_omni_MIMO_VLA)")
 h_omni_MIMO_VLA = ifft(H,[],2);
+size(h_omni_MIMO_VLA)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -37,7 +37,7 @@ function VRtable = get_VRtable(paraEx, paraSt)
 
 tic % For generating state of rand state
 numBS = paraEx.num_BS; % BS number
-rho_VR = (paraSt.n_c_far)/(pi*(paraSt.r_c-paraSt.l_c)^2); % VR density
+rho_VR = (paraSt.n_c_far)/(pi*(paraSt.r_c-paraSt.l_c)^2); % VR density      % .l_c: Transition region radius for clusters [m] % .r_c: Visibility region radius for clusters [m] % .n_c_far: Average number of far clusters in the scenario
 n_VR = round(rho_VR*pi*paraEx.net_radii^2); % Total number of VRs in the cell of one BS
 numVRlogi = n_VR*numBS; % Total number of logical VRs for all BSs
 numVRtrue = round(numVRlogi/sum([1:numBS].*paraSt.BS_common)); % Total number of physical VRs for all BSs

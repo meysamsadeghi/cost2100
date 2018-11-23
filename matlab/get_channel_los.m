@@ -43,17 +43,17 @@ BS.pos = BS_pos;
 
 lambda = paraEx.c0/paraEx.center_freq; % Wavelength
 
-if (calc_dist(BS.pos,MS.pos)>paraSt.d_co)
+if (calc_dist(BS.pos,MS.pos)>paraSt.d_co)                                  % paraSt.d_co = 30; % LOS cut-off distance [m]
     power_los = 0;  
     power_factor = 0;
 else
     % Get the transition function
     d_MS_VRLOS = calc_dist(MS.pos(1:2),BS.VRLOS);
-    if (d_MS_VRLOS >paraSt.r_l)
+    if (d_MS_VRLOS >paraSt.r_l)                                             % MEYSAM: paraSt.r_l = 0; % LOS VR size [m]
         power_los = 0;
         power_factor = 0;
     else
-        y = d_MS_VRLOS-(paraSt.r_l-paraSt.l_l);
+        y = d_MS_VRLOS-(paraSt.r_l-paraSt.l_l);                             % paraSt.l_l = 0; % LOS TR size [m]
         A_los = 1/2-atan(2*sqrt(2)*y/sqrt(lambda*paraSt.l_l))/pi;
 
         power_other = sum(abs(channel.h(:,6)).^2);

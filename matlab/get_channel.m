@@ -270,7 +270,7 @@ else
 end
 
 % Contains information of all MPCs, except for the LOS
-h = [h; h_local_BS; h_local_MS]; 
+h = [h; h_local_BS; h_local_MS]; %% firsst h is ((num_active_clusters*num_mpc) * 10), where num_mpc=1000, and 10=length of h_local_ms
 
 if isempty(h)
     error('Empty h, cluster');
