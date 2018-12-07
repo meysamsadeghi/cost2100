@@ -1,4 +1,4 @@
-function [AntNotBlocked,LOS_channels,LOS_delay_ampl] = GenerateChannel(parameter,plot_Env)
+function [AntNotBlocked,LOS_channels,LOS_channels_ReIm] = GenerateChannel(parameter,plot_Env)
 
 
 %% Position of the antennas within one BS, for very large arrays
@@ -26,9 +26,9 @@ for snap_index=1:parameter.snapNum
     end
 end
 %% Now we have the attacked models! Lets plot the environment and create the delays and amplitudes
-LOS_delay_ampl = zeros(2, parameter.BSPosNum, parameter.snapNum); % the first dimenssion is delay and absolute value
-LOS_channels = zeros(parameter.BSPosNum, parameter.snapNum); % it is important to initialize it with 0, as those antenna which are blocked need to be zero!
-
+%LOS_delay_ampl = zeros(parameter.snapNum, parameter.BSPosNum, 2); % the last dimenssion is delay and absolute value
+LOS_channels = zeros(parameter.snapNum, parameter.BSPosNum); % it is important to initialize it with 0, as those antenna which are blocked need to be zero!
+LOS_channels_ReIm = zeros(parameter.snapNum, parameter.BSPosNum, 2); % last dimenssion contains real and imaginary pasrt of the channel
 
 if plot_Env
     %% Create the channel and Plot the environmet
@@ -54,10 +54,12 @@ if plot_Env
                 delayLOS = dist_LOS / parameter.c_lightSpeed;
                 pathloss_LOS_dB = 20*log10(dist_LOS) + 20*log10(mean(parameter.freq)) - 147.6;
                 pathloss_LOS = 10^(-pathloss_LOS_dB/10);
-                LOS_delay_ampl(:,BSantena_index,snap_index) = [delayLOS,pathloss_LOS];
-                LOS_channels(BSantena_index,snap_index) = sqrt(pathloss_LOS) * exp(1i * 2 * pi * mean(parameter.freq) * delayLOS);  % NOTE THAT SQRT(pathloss) should be applied here! From D. Tse book, page 24, assuming a Block Fading (Flat and slow fading).
+                %LOS_delay_ampl(snap_index , BSantena_index, :) = [delayLOS,pathloss_LOS];
+                LOS_channels(snap_index,BSantena_index) = sqrt(pathloss_LOS) * exp(1i * 2 * pi * mean(parameter.freq) * delayLOS);  % NOTE THAT SQRT(pathloss) should be applied here! From D. Tse book, page 24, assuming a Block Fading (Flat and slow fading).
             end
         end
+        LOS_channels_ReIm(snap_index , :, 1) = real(LOS_channels(snap_index, :,1));
+        LOS_channels_ReIm(snap_index , :, 2) = imag(LOS_channels(snap_index, :,1));
     end
 else
     %% Create the channel but do not plot environment
@@ -69,10 +71,12 @@ else
                 delayLOS = dist_LOS / parameter.c_lightSpeed;
                 pathloss_LOS_dB = 20*log10(dist_LOS) + 20*log10(mean(parameter.freq)) - 147.6;
                 pathloss_LOS = 10^(-pathloss_LOS_dB/10);
-                LOS_delay_ampl(:,BSantena_index,snap_index) = [delayLOS,pathloss_LOS];
-                LOS_channels(BSantena_index,snap_index) = sqrt(pathloss_LOS) * exp(1i * 2 * pi * mean(parameter.freq) * delayLOS);  % NOTE THAT SQRT(pathloss) should be applied here! From D. Tse book, page 24, assuming a Block Fading (Flat and slow fading).
+                %LOS_delay_ampl(snap_index , BSantena_index, :) = [delayLOS,pathloss_LOS];
+                LOS_channels(snap_index, BSantena_index) = sqrt(pathloss_LOS) * exp(1i * 2 * pi * mean(parameter.freq) * delayLOS);  % NOTE THAT SQRT(pathloss) should be applied here! From D. Tse book, page 24, assuming a Block Fading (Flat and slow fading). 
             end
         end
+        LOS_channels_ReIm(snap_index , :, 1) = real(LOS_channels(snap_index, :,1));
+        LOS_channels_ReIm(snap_index , :, 2) = imag(LOS_channels(snap_index, :,1));
     end
 end
 
