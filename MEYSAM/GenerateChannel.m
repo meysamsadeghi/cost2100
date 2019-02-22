@@ -1,4 +1,4 @@
-function [AntNotBlocked,LOS_channels,LOS_channels_ReIm] = GenerateChannel(parameter,plot_Env)
+function [AntNotBlocked,LOS_channels,LOS_phase_ampl, LOS_channels_ReIm] = GenerateChannel(parameter,plot_Env)
 
 
 %% Position of the antennas within one BS, for very large arrays
@@ -10,7 +10,7 @@ for i=1:parameter.BSPosNum
 end
 %% Obstacke Initial Positions
 numObs = length(parameter.ObsPos(:,1));                                    
-%% Check which antennas are blocked at each snapshot for one MS (iluminator) and multiple obstacles --> need to be revised for multiple MS (iluminator) - AntNotBlocked should have one more dimenssion for different MSs, which I have not done yet.
+%% Check which antennas are blocked at each snapshot for one MS (transmitter or iluminator) and multiple obstacles --> need to be revised for multiple MS (iluminator) - AntNotBlocked should have one more dimenssion for different MSs, which I have not done yet.
 AntNotBlocked = ones(parameter.BSPosNum,parameter.snapNum); % if AntNotBlocked(i,j) becomes 0, it means the antenna i is blocked by the Obstackels at snapshot j
 for snap_index=1:parameter.snapNum
     envt.ObsPos(snap_index,:,:) = parameter.ObsPos + ( (snap_index-1) * parameter.ObsVelo * (1/parameter.snapRate) );
@@ -26,7 +26,7 @@ for snap_index=1:parameter.snapNum
     end
 end
 %% Now we have the attacked models! Lets plot the environment and create the delays and amplitudes
-%LOS_delay_ampl = zeros(parameter.snapNum, parameter.BSPosNum, 2); % the last dimenssion is delay and absolute value
+LOS_phase_ampl = zeros(parameter.snapNum, parameter.BSPosNum, 2); % the last dimenssion is phase and absolute value (amplitude)
 LOS_channels = zeros(parameter.snapNum, parameter.BSPosNum); % it is important to initialize it with 0, as those antenna which are blocked need to be zero!
 LOS_channels_ReIm = zeros(parameter.snapNum, parameter.BSPosNum, 2); % last dimenssion contains real and imaginary pasrt of the channel
 
@@ -54,7 +54,7 @@ if plot_Env
                 delayLOS = dist_LOS / parameter.c_lightSpeed;
                 pathloss_LOS_dB = 20*log10(dist_LOS) + 20*log10(mean(parameter.freq)) - 147.6;
                 pathloss_LOS = 10^(-pathloss_LOS_dB/10);
-                %LOS_delay_ampl(snap_index , BSantena_index, :) = [delayLOS,pathloss_LOS];
+                LOS_phase_ampl(snap_index , BSantena_index, :) = [ mod( 2 * pi * mean(parameter.freq) * delayLOS,2*pi ) , sqrt(pathloss_LOS)];
                 LOS_channels(snap_index,BSantena_index) = sqrt(pathloss_LOS) * exp(1i * 2 * pi * mean(parameter.freq) * delayLOS);  % NOTE THAT SQRT(pathloss) should be applied here! From D. Tse book, page 24, assuming a Block Fading (Flat and slow fading).
             end
         end
@@ -71,7 +71,7 @@ else
                 delayLOS = dist_LOS / parameter.c_lightSpeed;
                 pathloss_LOS_dB = 20*log10(dist_LOS) + 20*log10(mean(parameter.freq)) - 147.6;
                 pathloss_LOS = 10^(-pathloss_LOS_dB/10);
-                %LOS_delay_ampl(snap_index , BSantena_index, :) = [delayLOS,pathloss_LOS];
+                LOS_phase_ampl(snap_index , BSantena_index, :) = [ mod( 2 * pi * mean(parameter.freq) * delayLOS,2*pi ) , sqrt(pathloss_LOS)];
                 LOS_channels(snap_index, BSantena_index) = sqrt(pathloss_LOS) * exp(1i * 2 * pi * mean(parameter.freq) * delayLOS);  % NOTE THAT SQRT(pathloss) should be applied here! From D. Tse book, page 24, assuming a Block Fading (Flat and slow fading). 
             end
         end

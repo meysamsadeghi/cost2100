@@ -1,10 +1,14 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Problem: given snapNum CSI, we want to say if an object is moving from left to right or from right to left? 
+% NumSamples is the number of datapoints we have (for right to left and also fro left to right so in general 2 X NumSamples)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 clear all
 close all
 clc
 
 parameter.freq = [2.58e9 2.62e9]; % starting parameter.freq. - ending freq. [Hz]
 
-parameter.snapNum = 10; % number of snapshots (given parameter.MSVelo, cover about .25 m)
+parameter.snapNum = 5; % number of snapshots (number of plots of the nvironment per sample index) (given parameter.MSVelo, cover about .25 m)
 parameter.snapRate = 4;
 disp('NUmber of snaps per second:')
 disp(parameter.snapNum / parameter.snapRate) 
@@ -23,10 +27,11 @@ parameter.BSPosNum = 100; % number of positions at each BS site, for large array
 
 parameter.c_lightSpeed = 3e8;
 
-parameter.NumSamples = 8192; % is the number of samples from letf to rght and right to left
+parameter.NumSamples = 1 %8192; % is the number of samples from letf to right and right to left = it is like the number of datapoints 
 %%
 RightToLeft = zeros(parameter.NumSamples, parameter.snapNum, parameter.BSPosNum, 2); % num_sample x num_time_steps x num_BS_ant x 2 (2 is for real and imaginary parts of channel)
-plot_Env=false;
+RightToLeft_phase_amp = zeros(parameter.NumSamples, parameter.snapNum, parameter.BSPosNum, 2);
+plot_Env=true; % if parameter.NumSamples is a big number (>3) do not plot environment,because it generates many plots that kills you memory and fill the page
 for sample_index =1:parameter.NumSamples % write a loop to create channels for RIGHT to LEFT moving with random speed
     if mod(sample_index,100) == 0
         disp(sample_index)
@@ -40,12 +45,14 @@ for sample_index =1:parameter.NumSamples % write a loop to create channels for R
     parameter.ObsPos = [x_pos,y_pos,zeros(parameter.NumObs,1)];
      
     
-    [AntNotBlocked,LOS_channels,LOS_channels_ReIm] = GenerateChannel(parameter,plot_Env);
+    [AntNotBlocked,LOS_channels,LOS_phase_ampl,LOS_channels_ReIm] = GenerateChannel(parameter,plot_Env);
     RightToLeft(sample_index,:,:,:) = LOS_channels_ReIm;
+    RightToLeft_phase_amp(sample_index,:,:,:) = LOS_phase_ampl;
 end
 
 %% 
 LeftToRight = zeros(parameter.NumSamples, parameter.snapNum, parameter.BSPosNum, 2); % num_sample x num_time_steps x num_BS_ant x 2 (2 is for real and imaginary parts of channel)
+LeftToRight_phase_amp = zeros(parameter.NumSamples, parameter.snapNum, parameter.BSPosNum, 2);
 for sample_index =1:parameter.NumSamples % write a loop to create channels for LEFT to RIGHT moving with random speed
     if mod(sample_index,100) == 0
         disp(sample_index)
@@ -60,8 +67,9 @@ for sample_index =1:parameter.NumSamples % write a loop to create channels for L
     parameter.ObsPos = [x_pos,y_pos,zeros(parameter.NumObs,1)];
     
     
-    [AntNotBlocked,LOS_channels,LOS_channels_ReIm] = GenerateChannel(parameter,plot_Env);
+    [AntNotBlocked,LOS_channels,LOS_phase_ampl,LOS_channels_ReIm] = GenerateChannel(parameter,plot_Env);
     LeftToRight(sample_index,:,:,:) = LOS_channels_ReIm;
+    LeftToRight_phase_amp(sample_index,:,:,:) = LOS_phase_ampl;
 end
 
 
